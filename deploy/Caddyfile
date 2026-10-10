@@ -1,0 +1,13 @@
+{
+	email {$CADDY_ACME_EMAIL}
+}
+
+{$RADAR_DOMAIN} {
+	encode gzip
+	reverse_proxy radar:8791
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+}

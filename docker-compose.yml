@@ -1,0 +1,52 @@
+services:
+  radar:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      API_HOST: 0.0.0.0
+      API_PORT: "8791"
+      DATABASE_PATH: /data/radar.sqlite
+    volumes:
+      - radar-data:/data
+    healthcheck:
+      test: ["CMD", "node", "-e", "const u=new URL(process.env.PUBLIC_URL);require('http').get({host:'127.0.0.1',port:8791,path:'/api/health',headers:{host:u.host}},r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    expose:
+      - "8791"
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      RADAR_DOMAIN: ${RADAR_DOMAIN}
+      CADDY_ACME_EMAIL: ${CADDY_ACME_EMAIL}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - radar
+  translate:
+    image: libretranslate/libretranslate:v1.9.6
+    profiles: ["translate"]
+    restart: unless-stopped
+    environment:
+      LT_LOAD_ONLY: en,zh
+      LT_DISABLE_WEB_UI: "true"
+    expose:
+      - "5000"
+    ports:
+      - "${TRANSLATE_HOST_PORT:-5001}:5000"
+
+volumes:
+  radar-data:
+  caddy-data:
+  caddy-config:

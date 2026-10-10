@@ -1,0 +1,38 @@
+# 反代模式：官网服务器上已有 nginx/宝塔等占用 80/443 时使用。
+# radar 只监听服务器本机 127.0.0.1:8791，由外层反代终止 HTTPS 后转发过来：
+#   外层站点 radar.example.com → http://127.0.0.1:8791
+# 启动：docker compose -f docker-compose.behind-proxy.yml up -d --build
+# 翻译 sidecar：加 --profile translate（radar 通过容器网络 translate:5000 访问）
+services:
+  radar:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      API_HOST: 0.0.0.0
+      API_PORT: "8791"
+      DATABASE_PATH: /data/radar.sqlite
+    volumes:
+      - radar-data:/data
+    healthcheck:
+      test: ["CMD", "node", "-e", "const u=new URL(process.env.PUBLIC_URL);require('http').get({host:'127.0.0.1',port:8791,path:'/api/health',headers:{host:u.host}},r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    ports:
+      - "127.0.0.1:8791:8791"
+  translate:
+    image: libretranslate/libretranslate:v1.9.6
+    profiles: ["translate"]
+    restart: unless-stopped
+    environment:
+      LT_LOAD_ONLY: en,zh
+      LT_DISABLE_WEB_UI: "true"
+    expose:
+      - "5000"
+
+volumes:
+  radar-data:

@@ -1,0 +1,35 @@
+{
+  "name": "civil-ai-radar-home",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node scripts/prepare-sites-build.mjs",
+    "preview": "vite preview",
+    "test:sites": "node --test tests/sites-worker.test.mjs",
+    "test:radar-data": "node scripts/validate-radar-data.mjs",
+    "test:functions": "node --test tests/radar-functions.test.mjs",
+    "dev:api": "node --env-file-if-exists=.env server/index.mjs",
+    "dev:translate": "node scripts/start-local-translate.mjs",
+    "start:server": "node --env-file-if-exists=.env server/index.mjs",
+    "test:backend": "node --test tests/backend.test.mjs",
+    "test:collector": "node --test tests/scheduler.test.mjs tests/backend.test.mjs tests/academic.test.mjs",
+    "test:reading": "node --test tests/reading.test.mjs",
+    "test:all": "node --test tests/backend.test.mjs tests/scheduler.test.mjs tests/academic.test.mjs tests/reading.test.mjs tests/radar-functions.test.mjs tests/ggzy.test.mjs tests/szggzy.test.mjs tests/gzggzy.test.mjs tests/intel.test.mjs tests/procurement.test.mjs tests/procurement-identity.test.mjs tests/topic-match.test.mjs tests/report-periods.test.mjs tests/model-calls.test.mjs tests/public-feeds.test.mjs tests/event-suggest.test.mjs tests/agent-pipeline.test.mjs tests/robots-retry.test.mjs tests/agent-access.test.mjs tests/backup.test.mjs",
+    "eval:thresholds": "node scripts/eval-review-thresholds.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@tabler/icons-react": "^3.46.0",
+    "@vitejs/plugin-react": "5.0.4",
+    "fast-xml-parser": "^5.11.1",
+    "nodemailer": "^10.0.10",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "robots-parser": "^3.0.1",
+    "vite": "6.4.2"
+  }
+}

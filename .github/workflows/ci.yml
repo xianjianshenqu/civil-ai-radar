@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          # 与 Dockerfile 的 node:24 生产镜像一致。
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Unit tests
+        run: npm run test:all
+      - name: Editorial data check
+        run: npm run test:radar-data
+      - name: Build
+        run: npm run build
+      - name: Sites handoff check
+        run: npm run test:sites
