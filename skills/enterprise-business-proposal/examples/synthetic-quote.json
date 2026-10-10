@@ -1,0 +1,43 @@
+{
+  "currency": "CNY",
+  "prices_include_tax": true,
+  "tax_rate": "0.06",
+  "tolerance": "0.01",
+  "options": [
+    {
+      "name": "Recommended",
+      "items": [
+        {
+          "name": "Private-deployment platform license",
+          "quantity": "1",
+          "unit_price": "300000",
+          "periods": "1",
+          "discount_percent": "10",
+          "gift": false,
+          "declared_line_total": "270000"
+        },
+        {
+          "name": "Implementation service",
+          "quantity": "20",
+          "unit_price": "5000",
+          "periods": "1",
+          "discount_percent": "0",
+          "gift": false,
+          "declared_line_total": "100000"
+        },
+        {
+          "name": "Administrator training",
+          "quantity": "1",
+          "unit_price": "12000",
+          "periods": "1",
+          "discount_percent": "0",
+          "gift": true,
+          "declared_line_total": "0"
+        }
+      ],
+      "declared_subtotal": "370000",
+      "declared_tax": "20943.40",
+      "declared_total": "370000"
+    }
+  ]
+}

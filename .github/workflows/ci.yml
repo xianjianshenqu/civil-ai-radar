@@ -25,3 +25,17 @@ jobs:
         run: npm run build
       - name: Sites handoff check
         run: npm run test:sites
+
+  # skills/enterprise-business-proposal 自带的 Python 单元测试与报价校验 CLI。
+  skill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Skill unit tests
+        run: python -m unittest discover -s skills/enterprise-business-proposal/tests -p "test_*.py"
+      - name: Exercise quote CLI
+        run: python skills/enterprise-business-proposal/scripts/validate_quote.py skills/enterprise-business-proposal/examples/synthetic-quote.json

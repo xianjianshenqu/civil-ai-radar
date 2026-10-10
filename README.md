@@ -1,6 +1,44 @@
-# 土木 AI 雷达（Civil AI Radar）
+# 土木 AI 雷达（Civil AI Radar）与 Agent Skills
 
 面向土木与基础设施行业的 AI 落地情报与采购线索雷达：自动采集公开信源（行业媒体、期刊、政府采购与公共资源交易平台），用可解释的销售价值评分辅助人工复核，提供中英双语阅读、日报／周报／月报、采购公告分道视图，并通过匿名只读的 REST API / MCP / RSS 对外输出，供 AI Agent 与其他系统接入。
+
+本仓库同时收录可独立安装的 Agent Skill（见下方目录），主项目与技能共存于一个仓库，方便一站式获取。
+
+## 仓库内容
+
+| 内容 | 类型 | 入口 |
+| --- | --- | --- |
+| 土木 AI 雷达 | 主项目（本仓库主体，完整可部署网站） | 本 README 下文 |
+| [enterprise-business-proposal](skills/enterprise-business-proposal/SKILL.md) | Agent Skill：企业商务方案制作／审查 | [`skills/enterprise-business-proposal/`](skills/enterprise-business-proposal/) |
+| civil-radar | Agent Skill：本站内置的雷达查询技能 | 部署实例的 `/skills/civil-radar/SKILL.md` |
+
+## Agent Skill：企业商务方案制作（enterprise-business-proposal）
+
+帮助销售和售前人员快速制作、审查和优化 To B 企业商务方案的开源 Agent Skill，面向大中型企业、国企、央企和复杂决策链客户。三种模式：`create`（依据客户、产品、服务和报价材料创建新方案）、`review/audit`（只报告问题、不改文件）、`review/revise`（保留原文件生成优化版）。区分已确认事实、可计算数据、冲突信息、合理假设、待确认事项和内部敏感信息，并用确定性 Python 脚本校验结构化报价的算术一致性。它不是法律合同生成器、完整投标文件系统、消费级报价工具或融资商业计划书工具。
+
+安装（使用开源 [Skills CLI](https://github.com/vercel-labs/skills)；安装第三方 Skill 前应先检查来源和文件内容）：
+
+```text
+# 交互式安装（不确定平台时）
+npx skills add xianjianshenqu/civil-ai-radar -g
+
+# 安装到 Claude Code
+npx skills add xianjianshenqu/civil-ai-radar --skill enterprise-business-proposal -g -a claude-code -y --copy
+
+# 安装到 Codex
+npx skills add xianjianshenqu/civil-ai-radar --skill enterprise-business-proposal -g -a codex -y --copy
+
+# 同时安装到 Codex、Claude Code、Gemini CLI 和 CodeBuddy
+npx skills add xianjianshenqu/civil-ai-radar --skill enterprise-business-proposal -g -a codex -a claude-code -a gemini-cli -a codebuddy -y --copy
+```
+
+手动安装：下载本仓库，把 [`skills/enterprise-business-proposal`](skills/enterprise-business-proposal/) 目录复制到对应平台的技能目录（如 `~/.claude/skills/`、`~/.codex/skills/`）。技能自带单元测试与示例报价：`python3 -m unittest discover -s skills/enterprise-business-proposal/tests`。
+
+该 Skill 最初发布于 [enterprise-business-proposal-skill](https://github.com/xianjianshenqu/enterprise-business-proposal-skill)（已归档），历史 Release 安装包仍可在旧仓库下载；后续更新只在本仓库进行。
+
+## Agent Skill：civil-radar（本站内置）
+
+部署本站后，任何支持 SKILL.md 的 Agent 都可以从实例安装雷达查询技能，通过 `/api/v1`、`/api/mcp` 查询公开池。入口：部署实例的 `/skills/civil-radar/SKILL.md`（该文件由服务端动态输出，仓库内不重复放置静态副本）。详见下文[「Agent 接入」](#agent-接入)。
 
 ## 功能特性
 
@@ -39,6 +77,7 @@ npm run test:radar-data   # 演示数据结构校验
 npm run build             # 生产构建 + Sites 静态包
 npm run test:sites        # Sites 静态 worker 测试
 npm run eval:thresholds   # 用人工审核结论回放评分阈值（只读）
+python3 -m unittest discover -s skills/enterprise-business-proposal/tests   # Skill 单元测试（Python 3.10+）
 ```
 
 ## 生产部署
@@ -80,6 +119,7 @@ npm run eval:thresholds   # 用人工审核结论回放评分阈值（只读）
 src/            React + Vite 前端（components/ 视图、lib/ 业务逻辑、data/ 演示数据）
 server/         Node 后端（采集器 collector/procurement/ggzy/…、审核 review、翻译 translation、
                 机器审阅 machineReview、账号 auth、Agent 接入层 agentAccess、feeds）
+skills/         可独立安装的 Agent Skill（企业商务方案制作，含测试与示例）
 worker/         Sites 静态演示版（不含后台功能，见 .openai/hosting.json）
 scripts/        部署、本地翻译、数据校验与阈值回放脚本
 tests/          node --test 单元测试
@@ -92,4 +132,4 @@ docs/           信源与采集合规说明
 
 ## 许可证
 
-[MIT](LICENSE)
+[MIT](LICENSE)。`skills/enterprise-business-proposal/` 内附带该 Skill 的原始版权声明（MIT，© 2026 广州思沃克科技有限公司）。

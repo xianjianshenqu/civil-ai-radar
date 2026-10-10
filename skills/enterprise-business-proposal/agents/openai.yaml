@@ -1,0 +1,6 @@
+interface:
+  display_name: "企业商务方案"
+  short_description: "生成或审查面向大企业的软件与专业服务商务方案"
+  default_prompt: "使用 $enterprise-business-proposal 创建或审查一份可提交客户的企业商务方案。"
+policy:
+  allow_implicit_invocation: true
