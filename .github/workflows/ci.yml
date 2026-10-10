@@ -9,6 +9,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: civil-ai-radar
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -16,6 +19,7 @@ jobs:
           # 与 Dockerfile 的 node:24 生产镜像一致。
           node-version: 24
           cache: npm
+          cache-dependency-path: civil-ai-radar/package-lock.json
       - run: npm ci
       - name: Unit tests
         run: npm run test:all
@@ -26,7 +30,7 @@ jobs:
       - name: Sites handoff check
         run: npm run test:sites
 
-  # skills/enterprise-business-proposal 自带的 Python 单元测试与报价校验 CLI。
+  # enterprise-business-proposal 技能自带的 Python 单元测试与报价校验 CLI。
   skill:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -36,6 +40,6 @@ jobs:
         with:
           python-version: "3.13"
       - name: Skill unit tests
-        run: python -m unittest discover -s skills/enterprise-business-proposal/tests -p "test_*.py"
+        run: python -m unittest discover -s enterprise-business-proposal/tests -p "test_*.py"
       - name: Exercise quote CLI
-        run: python skills/enterprise-business-proposal/scripts/validate_quote.py skills/enterprise-business-proposal/examples/synthetic-quote.json
+        run: python enterprise-business-proposal/scripts/validate_quote.py enterprise-business-proposal/examples/synthetic-quote.json
